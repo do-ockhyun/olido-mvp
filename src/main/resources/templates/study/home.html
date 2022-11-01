@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <h1>This is Home</h1>
+
+      <h2>시험 대상 목록</h2>
+      <el-card v-for="e in exams" shadow="always" :body-style="{ padding: '20px' }">
+        <span>{{ e.name }}</span>
+      </el-card>
+      
+  
+      <h2>시험 결과 목록</h2>
+      <el-card v-for="r in results" shadow="always" :body-style="{ padding: '20px' }">
+        <span>{{ r.name }}</span>
+      </el-card>
+    </div>
+  </body>
+  <script src="/js/study/home.js"></script>
+</html>

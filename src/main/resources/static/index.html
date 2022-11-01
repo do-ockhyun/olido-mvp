@@ -12,6 +12,18 @@
       href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
     />
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/js/ink.min.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+
+    <style>
+      #editor {
+        width: 600px;
+        height: 300px;
+
+        background-color: pink;
+      }
+    </style>
   </head>
   <body>
     <div id="app">
@@ -19,7 +31,14 @@
       <el-dialog :visible.sync="visible" title="Hello world">
         <p>Try Element</p>
       </el-dialog>
+
+      <el-button type="primary" size="default" @click="convert"
+        >export</el-button
+      >
     </div>
+
+    <div id="editor" touch-action="none"></div>
+    <p id="export-result"></p>
   </body>
 
   <script src="./js/index.js"></script>

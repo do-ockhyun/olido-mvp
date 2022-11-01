@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <h1>
+        This is Exam page for
+        <p th:text="${id}">id</p>
+      </h1>
+
+      <el-card class="box-card" v-for="ex in exams">
+        <div slot="header" class="clearfix">
+          <span>{{ ex.title }}</span>
+        </div>
+
+        <div v-if="ex.type == 'MC'" v-for="co in ex.c" :key="c" class="text item">
+          {{ co }}
+        </div>
+        <div v-else-if="ex.type == 'SA'" class="text item">
+          <el-input placeholder="주관식" size="normal" clearable></el-input>
+        </div>
+      </el-card>
+    </div>
+  </body>
+
+  <script src="/js/study/exam.js"></script>
+</html>

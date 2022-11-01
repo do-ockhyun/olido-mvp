@@ -1,7 +1,16 @@
 new Vue({
-    el: "#app",
-    data: function () {
-      return { visible: false };
+  el: "#app",
+  data() {
+    return {
+      admin: false
+    };
+  },
+  methods: {
+    submitForm(param) {
+      alert("submit-" + param);
     },
-  });
-  
+    resetForm(param) {
+      alert("reset-" + param);
+    },
+  },
+});
