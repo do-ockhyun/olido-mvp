@@ -11,14 +11,28 @@ iink.register(editorElement, {
   },
 });
 
+function cleanLatex(latexExport) {
+  if (latexExport.includes("\\\\")) {
+    const steps = "\\begin{align*}" + latexExport + "\\end{align*}";
+    return steps
+      .replace("\\begin{aligned}", "")
+      .replace("\\end{aligned}", "")
+      .replace(new RegExp("(align.{1})", "g"), "aligned");
+  }
+  return latexExport.replace(new RegExp("(align.{1})", "g"), "aligned");
+}
+
 editorElement.addEventListener("exported", (evt) => {
   console.log("result", evt.detail);
 
-  if (evt.detail) {
-    resultElement.innerHTML = evt.detail.exports["application/x-latex"];
-  } else {
-    resultElement.innerHTML = "";
-  }
+  // const exports = evt.detail.exports;
+  // if (exports && exports["application/x-latex"]) {
+  //   const katexValue = cleanLatex(exports["application/x-latex"])
+  //   console.log("katexValue", katexValue);
+  //   katex.render(katexValue, resultElement);
+  // } else {
+  //   resultElement.innerHTML = "";
+  // }
 });
 
 new Vue({
@@ -28,7 +42,10 @@ new Vue({
   },
   methods: {
     convert() {
-      editorElement.editor.export_();
+      editorElement.editor.convert();
     },
+    clear() {
+      editorElement.editor.clear();
+    }
   },
 });

@@ -7,14 +7,20 @@
     <title>Document</title>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"/>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/js/ink.min.js"></script>
+    
     <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+    <script type="text/javascript" src="/node_modules/iink-js/dist/iink.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+          integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+          crossorigin="anonymous">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+            integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+            crossorigin="anonymous"></script>
 
     <style>
       #editor {
@@ -27,14 +33,13 @@
   </head>
   <body>
     <div id="app">
-      <el-button @click="visible = true">Button</el-button>
+      <el-button @click="clear">Clear</el-button>
+
       <el-dialog :visible.sync="visible" title="Hello world">
         <p>Try Element</p>
       </el-dialog>
 
-      <el-button type="primary" size="default" @click="convert"
-        >export</el-button
-      >
+      <el-button type="primary" size="default" @click="convert">Convert</el-button>
     </div>
 
     <div id="editor" touch-action="none"></div>
