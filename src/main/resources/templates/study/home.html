@@ -15,7 +15,7 @@
 
       <h2>시험 대상 목록</h2>
       <el-card v-for="e in exams" shadow="always" :body-style="{ padding: '20px' }">
-        <span>{{ e.name }}</span>
+        <span @click="goExam(e.name)">{{ e.name }}</span>
       </el-card>
       
   

@@ -26,7 +26,7 @@ new Vue({
 
     setTimeout(() => {
       this.selected.visible = false
-    }, 1000)
+    }, 1500)
 
     this.$refs.editor.addEventListener('exported', (evt) => {
       const exports = evt.detail.exports;
@@ -102,5 +102,11 @@ new Vue({
         this.selected.result.innerHTML = "수식입력 입력하시려면 터치하세요";
       }
     },
+    goHome() {
+      const ok = confirm("제출하시겠습니까?") 
+      if (ok) {
+        location.href = "/study"  
+      }
+    }
   },
 });

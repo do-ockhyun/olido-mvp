@@ -23,8 +23,8 @@
 
     <style>
       .writing-container {
-        width: 300px;
-        height: 150px;
+        width: 100vw;
+        height: 80vh;
 
         background-color: pink;
       }
@@ -33,7 +33,7 @@
 
   <body>
     <div id="app">
-      <h1 @click="selected.visible = !selected.visible">
+      <h1>
         This is Exam page for
         <p th:text="${id}">id</p>
       </h1>
@@ -66,6 +66,9 @@
         <el-button @click="clear">Clear</el-button>
         <el-button type="primary" @click="convert">Convert</el-button>        
       </div>
+
+      <el-button type="danger" size="large" @click="goHome">제출</el-button>
+      
       
     </div>
   </body>
