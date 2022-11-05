@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"/>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+    <script type="text/javascript" src="/node_modules/iink-js/dist/iink.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+      integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+      crossorigin="anonymous" />
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+      integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+      crossorigin="anonymous">
+    </script>
+
+    <style>
+      .writing-container {
+        width: 300px;
+        height: 150px;
+
+        background-color: pink;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <h1 @click="selected.visible = !selected.visible">
+        This is Exam page for
+        <p th:text="${id}">id</p>
+      </h1>
+
+      <el-card class="box-card" v-for="ex in exams" :key="ex.id">
+        <div slot="header" class="clearfix">
+          <span>{{ ex.title }}</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="clearAnswer(ex)" >Clear</el-button>
+        </div>
+
+        <el-radio-group v-if="ex.type == 'MC'" v-model="ex.answer">
+          <el-radio v-for="co in ex.choice" :key="co" :label="co">{{ co }}</el-radio>
+        </el-radio-group>
+
+        <div v-else-if="ex.type == 'SA'">
+          <el-input placeholder="주관식" size="normal" clearable v-model="ex.answer"></el-input>
+        </div>
+
+        <div v-else-if="ex.type == 'SC'">
+          <el-switch v-model="ex.answer" active-text="O" inactive-text="X"></el-switch>
+        </div>
+
+        <div v-else-if="ex.type == 'MF'">
+          <div ref="result" @click="showMathForm(ex)">수식입력 입력하시려면 터치하세요</div>
+        </div>
+      </el-card>
+      
+      <div v-show="selected.visible">
+        <div class="writing-container" ref="editor"></div>
+        <el-button @click="clear">Clear</el-button>
+        <el-button type="primary" @click="convert">Convert</el-button>        
+      </div>
+      
+    </div>
+  </body>
+
+  <script src="/js/study/exam.js"></script>
+</html>
