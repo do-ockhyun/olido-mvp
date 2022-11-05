@@ -24,5 +24,9 @@ new Vue({
       ],
     };
   },
-  methods: {},
+  methods: {
+    goExam(id) {
+      location.href = "/study/exam/" + id
+    }
+  },
 });
