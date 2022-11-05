@@ -19,9 +19,7 @@ issue - step을 진행하자
     * /login
     * /study
       - /home
-      
       - /exam/{id}
-
       - /result/{id}
 
     * /admin
