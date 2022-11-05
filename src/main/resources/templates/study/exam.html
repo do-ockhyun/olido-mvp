@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"/>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
@@ -55,7 +57,7 @@
         </div>
 
         <div v-else-if="ex.type == 'MF'">
-          <div ref="result" @click="showMathForm(ex)">수식입력</div>
+          <div ref="result" @click="showMathForm(ex)">수식입력 입력하시려면 터치하세요</div>
         </div>
       </el-card>
       

@@ -24,7 +24,10 @@ new Vue({
       },
     });
 
-    
+    setTimeout(() => {
+      this.selected.visible = false
+    }, 1000)
+
     this.$refs.editor.addEventListener('exported', (evt) => {
       const exports = evt.detail.exports;
       if (exports && exports['application/x-latex']) {
@@ -96,7 +99,7 @@ new Vue({
     clearAnswer(ex) {
       ex.answer = null;
       if (ex.type === "MF") {
-        this.selected.result.innerHTML = "수식입력";
+        this.selected.result.innerHTML = "수식입력 입력하시려면 터치하세요";
       }
     },
   },
