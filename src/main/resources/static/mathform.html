@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Form</title>
+
+    <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+    <script
+      type="text/javascript"
+      src="/node_modules/iink-js/dist/iink.min.js"
+    ></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.css"
+      integrity="sha384-Juol1FqnotbkyZUT5Z7gUPjQ9gzlwCENvUZTpQBAPxtusdwFLRy382PSDx5UUJ4/"
+      crossorigin="anonymous"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.js"
+      integrity="sha384-97gW6UIJxnlKemYavrqDHSX3SiygeOwIZhwyOKRfSaf0JWKRVj9hLASHgFTzT+0O"
+      crossorigin="anonymous"
+    ></script>
+
+    <style>
+      #editor {
+        width: 300px;
+        height: 300px;
+
+        background-color: pink;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="result">result</div>
+    <div id="editor"></div>
+    <div>
+      <button id="clear" onclick="editorClear();">Clear</button>
+      <button id="export" onclick="exportClose();">Export</button>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    var converted = null;
+    const resultElement = document.getElementById("result");
+    const editorElement = document.getElementById("editor");
+
+    function exportClose() {
+      opener.returnPopup(converted);
+      close();
+    }
+    function editorClear() {
+        console.log('clear');
+      editorElement.editor.clear();
+    }
+
+    function cleanLatex(latexExport) {
+      if (latexExport.includes("\\\\")) {
+        const steps = "\\begin{align*}" + latexExport + "\\end{align*}";
+        return steps
+          .replace("\\begin{aligned}", "")
+          .replace("\\end{aligned}", "")
+          .replace(new RegExp("(align.{1})", "g"), "aligned");
+      }
+      return latexExport.replace(new RegExp("(align.{1})", "g"), "aligned");
+    }
+
+    iink.register(editorElement, {
+      recognitionParams: {
+        type: "MATH",
+        server: {
+          applicationKey: "792be96c-c83b-487e-b0df-1e9d03954d5c",
+          hmacKey: "399ec104-1e9f-43b1-98d5-dddee06752d1",
+        },
+      },
+    });
+
+    editorElement.addEventListener("exported", (evt) => {
+      const exports = evt.detail.exports;
+      if (exports && exports["application/x-latex"]) {
+        converted = cleanLatex(exports["application/x-latex"]);
+        console.log("converted", converted);
+        katex.render(converted, resultElement);
+      } else {
+        resultElement.innerHTML = "";
+      }
+    });
+  </script>
+</html>
