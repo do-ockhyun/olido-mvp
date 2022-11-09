@@ -13,7 +13,7 @@
 
   <body>
     <div id="app">
-      <h1>This is Home</h1>
+      <h1>[[${name}]] 학생!! 공부합시다</h1>
 
       <h2>시험 대상 목록</h2>
       <el-card v-for="e in exams" shadow="always" :body-style="{ padding: '20px' }">
@@ -27,5 +27,12 @@
       </el-card>
     </div>
   </body>
+  <script th:inline="javascript">
+/*<![CDATA[*/
+    const _exams = /*[[ ${exams} ]]*/[];
+    const _result = /*[[ ${result} ]]*/[];
+/*]]>*/
+  </script>
+
   <script src="/js/study/home.js"></script>
 </html>

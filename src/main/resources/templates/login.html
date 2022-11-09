@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Olido</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
     <link
@@ -9,17 +10,21 @@
       href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
     />
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
 
   <body>
     <div id="app">
-      <el-form status-icon label-width="120px" class="demo-ruleForm">
+      <h1 th:text="${name}">Login Page</h1>
+
+      <el-form status-icon v-model="formData" label-width="120px">
         <el-form-item label="UserId">
-          <el-input type="text" autocomplete="off"></el-input>
+          <el-input v-model="formData.userId"></el-input>
         </el-form-item>
 
         <el-form-item label="Password">
-          <el-input type="password" autocomplete="off"></el-input>
+          <el-input type="password" v-model="formData.password"></el-input>
         </el-form-item>
 
         <el-form-item label="Admin">
@@ -31,8 +36,11 @@
           <el-button @click="resetForm('ruleForm')">Reset</el-button>
         </el-form-item>
       </el-form>
+      <div>
+        user1, user2, user3
+      </div>
     </div>
   </body>
 
-  <script src="./js/login.js"></script>
+  <script src="/js/login.js"></script>
 </html>
