@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javax.annotation.PostConstruct;
 
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +35,8 @@ public class AppController {
 	}
 
 	@GetMapping("/login")
-	public String login(Model model) {
-		model.addAttribute("name", "Login page");
+	public String login(Model model, String type) {
+		model.addAttribute("name", type);
 		return "login";
 	}
 
