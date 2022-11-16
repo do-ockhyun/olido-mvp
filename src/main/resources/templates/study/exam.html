@@ -9,13 +9,17 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.css" integrity="sha384-Juol1FqnotbkyZUT5Z7gUPjQ9gzlwCENvUZTpQBAPxtusdwFLRy382PSDx5UUJ4/" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.js" integrity="sha384-97gW6UIJxnlKemYavrqDHSX3SiygeOwIZhwyOKRfSaf0JWKRVj9hLASHgFTzT+0O" crossorigin="anonymous"></script> 
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
 
   <body>
-    <h1>
-      This is Exam page for
-      <p th:text="${id}" onclick="window.open('/mathform.html');" >id</p>
-    </h1>
+    <a href="/">
+      <h1>
+        This is Exam page for<p th:text="${id}">id</p>
+      </h1>
+    </a>
+    
     <div id="app">
 
       <el-card class="box-card" v-for="ex in exams" :key="ex.id">
@@ -58,6 +62,12 @@
       <el-button type="danger" size="large" @click="goHome">제출</el-button>
     </div>
   </body>
-
+  <script th:inline="javascript">
+/*<![CDATA[*/
+    const _id = /*[[ ${id} ]]*/"";
+    const _exams = /*[[ ${exams} ]]*/[];
+/*]]>*/
+  </script>
+    
   <script src="/js/study/exam.js"></script>
 </html>

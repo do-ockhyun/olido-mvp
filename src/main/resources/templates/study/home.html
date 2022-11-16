@@ -14,20 +14,20 @@
       <h1>[[${name}]] 학생!! 공부합시다</h1>
 
       <h2>시험 대상 목록</h2>
-      <el-card v-for="e in exams" shadow="always" :body-style="{ padding: '20px' }">
-        <span @click="goExam(e.name)">{{ e.name }}</span>
+      <el-card v-for="e in exams" shadow="always" :body-style="{ padding: '20px' }" :key="e.id">
+        <span @click="goExam(e.id)">{{ e.title }}</span>
       </el-card>
       
   
       <h2>시험 결과 목록</h2>
-      <el-card v-for="r in results" shadow="always" :body-style="{ padding: '20px' }">
-        <span>{{ r.name }}</span>
+      <el-card v-for="r in results" shadow="always" :body-style="{ padding: '20px' }" :key="e.id">
+        <span>{{ r.title }}</span>
       </el-card>
     </div>
   </body>
   <script th:inline="javascript">
 /*<![CDATA[*/
-    const _exams = /*[[ ${exams} ]]*/[];
+    const _exams = /*[[ ${examList} ]]*/[];
     const _result = /*[[ ${result} ]]*/[];
 /*]]>*/
   </script>
