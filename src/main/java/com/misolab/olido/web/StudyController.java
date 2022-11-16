@@ -37,64 +37,88 @@ public class StudyController {
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     static class Exam {
         String id;
         String title;
-
-        Exam(String id, String title) {
-            this.id = id;
-            this.title = title;
-        }
         String type;
         String answer;
         String choice;
-        String result;
-
-        static Exam convert(Map<String, String> map) {
-            return Exam.builder()
-                        .id(map.get("id"))
-                        .answer(map.get("answer"))
-                        .build();
-        }        
+        String result;  
     }
-    List<Exam> examList = new ArrayList<>();
-    List<Exam> exams = new ArrayList<>();
-    List<Exam> answers = new ArrayList<>();
 
     @Data
-    static class ExamResult {
-        Exam exam;
-        List<Exam> answers;
+    @Builder
+    static class Answer {
+        String id;
+        String answer;
     }
 
-    Map<String, List<ExamResult>> userAnswers = new HashMap<>();
+    @Data
+    static class Quiz {
+        String id;
+        String title;
+        
+        List<Exam> exam;
+        List<Answer> answer;
+
+        Quiz(String id, String title){
+            this.id = id;
+            this.title = title;
+        }
+    }
+
+    Map<String, List<Quiz>> userQuiz = new HashMap<>();
+
+    private Quiz makeQuiz(String id, String title) {
+
+        List<Exam> exams = new ArrayList<>();
+        List<Answer> answers = new ArrayList<>();
+
+        exams.add( Exam.builder().id("0").title("1번").type("MC").choice("[10, 20, 30, 40, 50]").build());
+        answers.add( Answer.builder().id("0").answer("10").build() );
+
+        exams.add( Exam.builder().id("1").title("2번").type("SC").build());
+        answers.add( Answer.builder().id("1").answer("true").build() );
+        
+        exams.add( Exam.builder().id("2").title("3번").type("SA").build()); 
+        answers.add( Answer.builder().id("2").answer("olido").build() );
+
+        exams.add( Exam.builder().id("3").title("4번").type("MF").build());
+        answers.add( Answer.builder().id("3").answer("\\sqrt{\\dfrac{b}{a}}").build() );
+
+        Quiz quiz = new Quiz(id, title);
+        quiz.setExam(exams);
+        quiz.setAnswer(answers);
+        return quiz;
+    }
+
+
+    String userIDs[] = { "user1", "user2", "user3" };
 
     @PostConstruct
     void onCreate() {
-        examList.add(new Exam("0", "중1-1 수학"));
-        examList.add(new Exam("1", "중1-2 수학"));
-        examList.add(new Exam("2", "중2-1 수학"));
-        examList.add(new Exam("3", "중2-2 수학"));
 
-        exams.add(new Exam("0", "1번", "MC", null, "[10, 20, 30, 40, 50]", null));
-        answers.add( Exam.builder().id("0").answer("10").build() );
+        for (String userID : userIDs) {
+            List<Quiz> quizs = new ArrayList<>();
+            quizs.add(makeQuiz("0", "중1-1 수학"));
+            quizs.add(makeQuiz("1", "중1-2 수학"));
+            
+            quizs.add(makeQuiz("2", "중2-1 수학"));
+            quizs.add(makeQuiz("3", "중2-2 수학"));
+            
+            userQuiz.put(userID, quizs);
+        }
+    }
 
-        exams.add(new Exam("1", "2번", "SC", null, null, null));
-        answers.add( Exam.builder().id("1").answer("true").build() );
-        
-        exams.add(new Exam("2", "3번", "SA", null, null, null));
-        answers.add( Exam.builder().id("2").answer("olido").build() );
-
-        exams.add(new Exam("3", "4번", "MF", null, null, null));
-        answers.add( Exam.builder().id("3").answer("\\sqrt{\\dfrac{b}{a}}").build() );
-        
+    Map<String, String> quizInfo(Quiz quiz){
+        Map<String, String> quizInfo = new HashMap<>();
+        quizInfo.put("id", quiz.getId());
+        quizInfo.put("title", quiz.getTitle());
+        return quizInfo;
     }
 
     @GetMapping
     public String home(Model model) {
-        model.addAttribute("examList", examList);
 
         User user = (User) httpSession.getAttribute("user");
         if (user == null) {
@@ -102,24 +126,33 @@ public class StudyController {
         }
 
         model.addAttribute("name", user.getName());
+
+        List<Quiz> quizs = userQuiz.get(user.getUserId());
+        List<Map<String, String>> quizList = quizs.stream().map(q -> quizInfo(q)).collect(Collectors.toList());
+        model.addAttribute("quizList", quizList);
+
         
-        List<ExamResult> examResults = userAnswers.get(user.getUserId());
-        if (examResults != null) {
-            List<String> result = examResults.stream().map(er -> er.getExam().getTitle()).collect(Collectors.toList());
-            model.addAttribute("result", result);    
-        }
+        // List<ExamResult> examResults = userAnswers.get(user.getUserId());
+        // if (examResults != null) {
+        //     List<String> result = examResults.stream().map(er -> er.getExam().getTitle()).collect(Collectors.toList());
+        //     model.addAttribute("result", result);    
+        // }
         return "study/home";
     }
 
     @GetMapping("/exam/{id}")
-    public String exam(@PathVariable String id, Model model) {
+    public String quiz(@PathVariable String id, Model model) {
         User user = (User) httpSession.getAttribute("user");
         if (user == null) {
             throw new RuntimeException("session is null");
         }
 
-        model.addAttribute("id", id);
-        model.addAttribute("exams", exams);
+        List<Quiz> quizs = userQuiz.get(user.getUserId());
+        Quiz quiz = quizs.stream().filter(q -> q.getId().equals(id)).findFirst().get();
+        model.addAttribute("id", quiz.getId());
+        model.addAttribute("title", quiz.getTitle());
+
+        model.addAttribute("exams", quiz.getExam());
         return "study/exam";
     }
 
@@ -130,7 +163,7 @@ public class StudyController {
         if (user == null) {
             throw new RuntimeException("session is null");
         }
-
+/* 
         List<Exam> answer = params.stream().map(Exam::convert).collect(Collectors.toList());
         log.info("answer {}", answer);
 
@@ -143,10 +176,11 @@ public class StudyController {
             Exam exam = examList.stream().filter(e -> e.getId().equals(id)).findFirst().get();
             examResult.setExam(exam);
             examResult.setAnswers(answer);
-            
+
             examResultList.add(examResult);
         }
         userAnswers.put(user.getUserId(), examResultList);
+*/
         return "study/exam";
     }
 

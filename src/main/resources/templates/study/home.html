@@ -14,8 +14,8 @@
       <h1>[[${name}]] 학생!! 공부합시다</h1>
 
       <h2>시험 대상 목록</h2>
-      <el-card v-for="e in exams" shadow="always" :body-style="{ padding: '20px' }" :key="e.id">
-        <span @click="goExam(e.id)">{{ e.title }}</span>
+      <el-card v-for="q in quiz" shadow="always" :body-style="{ padding: '20px' }" :key="q.id">
+        <span @click="goExam(q.id)">{{ q.title }}</span>
       </el-card>
       
   
@@ -27,7 +27,7 @@
   </body>
   <script th:inline="javascript">
 /*<![CDATA[*/
-    const _exams = /*[[ ${examList} ]]*/[];
+    const _quiz = /*[[ ${quizList} ]]*/[];
     const _result = /*[[ ${result} ]]*/[];
 /*]]>*/
   </script>
