@@ -40,7 +40,7 @@ const vm = new Vue({
         }))
         console.log('data', data)
         axios.post(`/study/exam/${_id}`, data )
-        // location.href = "/study";
+        location.href = "/study";
       }
     },
   },

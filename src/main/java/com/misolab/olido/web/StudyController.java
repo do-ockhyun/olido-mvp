@@ -18,12 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.misolab.olido.dto.User;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StudyController {
 
     final HttpSession httpSession;
+    final static ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
 
     @Data
     @Builder
@@ -67,7 +67,7 @@ public class StudyController {
         }
     }
 
-    Map<String, List<Quiz>> userQuiz = new HashMap<>();
+    List<Quiz> quizList = new ArrayList<>();
 
     private Quiz makeQuiz(String id, String title) {
 
@@ -92,22 +92,42 @@ public class StudyController {
         return quiz;
     }
 
+    @Data
+    static class Result {
+        String created;
+        String id;
+        String title;
+        List<Answer> answer;
 
-    String userIDs[] = { "user1", "user2", "user3" };
+        Map<String, String> getInfo(){
+            Map<String, String> info = new HashMap<>();
+            info.put("id", id);
+            info.put("title", title);
+            return info;
+        }
+
+        Result(String id, String title, ArrayList<Map> params) {
+            this.id = id;
+            this.title = title;
+            this.answer = new ArrayList<>();
+            
+            for (Map<String, String> received : params) {
+                String _id = received.get("id");
+                String _answer = received.get("answer");
+                Answer ans = new Answer(_id, _answer);
+                this.answer.add(ans);
+            }
+        }
+    }
+
+    Map<String, Result> userResult = new HashMap<>();
 
     @PostConstruct
     void onCreate() {
-
-        for (String userID : userIDs) {
-            List<Quiz> quizs = new ArrayList<>();
-            quizs.add(makeQuiz("0", "중1-1 수학"));
-            quizs.add(makeQuiz("1", "중1-2 수학"));
-            
-            quizs.add(makeQuiz("2", "중2-1 수학"));
-            quizs.add(makeQuiz("3", "중2-2 수학"));
-            
-            userQuiz.put(userID, quizs);
-        }
+        quizList.add(makeQuiz("0", "중1-1 수학"));
+        quizList.add(makeQuiz("1", "중1-2 수학"));
+        quizList.add(makeQuiz("2", "중2-1 수학"));
+        quizList.add(makeQuiz("3", "중2-2 수학"));
     }
 
     Map<String, String> quizInfo(Quiz quiz){
@@ -126,17 +146,12 @@ public class StudyController {
         }
 
         model.addAttribute("name", user.getName());
-
-        List<Quiz> quizs = userQuiz.get(user.getUserId());
-        List<Map<String, String>> quizList = quizs.stream().map(q -> quizInfo(q)).collect(Collectors.toList());
         model.addAttribute("quizList", quizList);
-
         
-        // List<ExamResult> examResults = userAnswers.get(user.getUserId());
-        // if (examResults != null) {
-        //     List<String> result = examResults.stream().map(er -> er.getExam().getTitle()).collect(Collectors.toList());
-        //     model.addAttribute("result", result);    
-        // }
+        Result result = userResult.get(user.getUserId());
+        if (result != null) {
+            model.addAttribute("result", result.getInfo());    
+        }
         return "study/home";
     }
 
@@ -147,8 +162,7 @@ public class StudyController {
             throw new RuntimeException("session is null");
         }
 
-        List<Quiz> quizs = userQuiz.get(user.getUserId());
-        Quiz quiz = quizs.stream().filter(q -> q.getId().equals(id)).findFirst().get();
+        Quiz quiz = quizList.stream().filter(q -> q.getId().equals(id)).findFirst().get();
         model.addAttribute("id", quiz.getId());
         model.addAttribute("title", quiz.getTitle());
 
@@ -159,29 +173,16 @@ public class StudyController {
     @ResponseBody
     @PostMapping("/exam/{id}")
     public String postExam(HttpSession httpSession, @PathVariable String id, @RequestBody ArrayList<Map> params) {
+        log.info("params {}", params);
+        
         User user = (User) httpSession.getAttribute("user");
         if (user == null) {
             throw new RuntimeException("session is null");
         }
-/* 
-        List<Exam> answer = params.stream().map(Exam::convert).collect(Collectors.toList());
-        log.info("answer {}", answer);
 
-        List<ExamResult> examResultList = userAnswers.get(user.getUserId());
-        if (examResultList == null) {
-            examResultList = new ArrayList<>();
-        }
-        if (examResultList.size() == 0) {
-            ExamResult examResult = new ExamResult();
-            Exam exam = examList.stream().filter(e -> e.getId().equals(id)).findFirst().get();
-            examResult.setExam(exam);
-            examResult.setAnswers(answer);
-
-            examResultList.add(examResult);
-        }
-        userAnswers.put(user.getUserId(), examResultList);
-*/
-        return "study/exam";
+        Result result = new Result(id, "sample", params);
+        userResult.put(user.getUserId(), result);
+        return "study";
     }
 
 
