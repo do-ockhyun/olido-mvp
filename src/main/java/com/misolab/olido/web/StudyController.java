@@ -1,11 +1,10 @@
 package com.misolab.olido.web;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 
@@ -120,7 +119,7 @@ public class StudyController {
         }
     }
 
-    Map<String, Result> userResult = new HashMap<>();
+    Map<String, List<Result>> userResult = new HashMap<>();
 
     @PostConstruct
     void onCreate() {
@@ -148,9 +147,9 @@ public class StudyController {
         model.addAttribute("name", user.getName());
         model.addAttribute("quizList", quizList);
         
-        Result result = userResult.get(user.getUserId());
-        if (result != null) {
-            model.addAttribute("result", result.getInfo());    
+        List<Result> resultList = userResult.get(user.getUserId());
+        if (resultList != null) {
+            model.addAttribute("result", resultList);    
         }
         return "study/home";
     }
@@ -172,7 +171,7 @@ public class StudyController {
 
     @ResponseBody
     @PostMapping("/exam/{id}")
-    public String postExam(HttpSession httpSession, @PathVariable String id, @RequestBody ArrayList<Map> params) {
+    public String postExam(HttpSession httpSession, @PathVariable String id, String title, @RequestBody ArrayList<Map> params) {
         log.info("params {}", params);
         
         User user = (User) httpSession.getAttribute("user");
@@ -180,8 +179,14 @@ public class StudyController {
             throw new RuntimeException("session is null");
         }
 
-        Result result = new Result(id, "sample", params);
-        userResult.put(user.getUserId(), result);
+        Result result = new Result(id, title, params);
+        List<Result> resultList = userResult.get(user.getUserId());
+        if (resultList == null) {
+            resultList = new ArrayList<>();
+        }
+        resultList.removeIf(r -> r.getId().equals(result.getId()));
+        resultList.add(result);
+        userResult.put(user.getUserId(), resultList);
         return "study";
     }
 

@@ -39,7 +39,7 @@ const vm = new Vue({
           answer: `${ex.answer}`
         }))
         console.log('data', data)
-        axios.post(`/study/exam/${_id}`, data )
+        axios.post(`/study/exam/${_id}?title=${_title}`, data )
         location.href = "/study";
       }
     },
