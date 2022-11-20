@@ -21,6 +21,9 @@ const vm = new Vue({
     };
   },
   methods: {
+    goBack() {
+      window.history.back()
+    }
   },
 });
 
