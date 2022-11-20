@@ -1,7 +1,6 @@
 package com.misolab.olido.web;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,8 +214,6 @@ public class StudyController {
         }
 
         Result result = resultList.stream().filter(r -> r.getId().equals(id)).findFirst().get();
-        //  결과 번호를 가지고
-            //  quiz 를 찾고
         Quiz quiz = quizList.stream().filter(q -> q.getId().equals(id)).findFirst().get();
 
         ObjectMapper objectMapper = new ObjectMapper();

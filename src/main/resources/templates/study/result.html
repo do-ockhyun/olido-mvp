@@ -13,17 +13,20 @@
   </head>
 
   <body>
-    <a href="javascript:window.history.back()">
-      <h1 th:text="${title}">title</h1>
-    </a>
+    <h1 th:text="${title}">title</h1>
 
     <div id="app">
       <!--  -->
       <el-card class="box-card" v-for="ex in exams" :key="ex.id">
         <div slot="header" class="clearfix">
-          <span>{{ ex.title }}</span>
-          <p v-if="ex.type!=='MF'" style="float: right; padding: 3px 0">정답은 {{ ex.answer }}</p>
-          <div v-else v-html="ex.answer" style="float: right; padding: 3px 0"></div>
+          {{ ex.title }} : 
+          <span v-if="ex.answer == ex.result" style="color: green;">O</span>
+          <span v-else style="color: red;">X</span>
+          <div style="float: right; padding: 3px 0">
+            정답은
+            <span v-if="ex.type!=='MF'" >{{ ex.answer }}</span>
+            <div v-else v-html="ex.answer" style="float: right; padding: 3px 0"></div>              
+          </div>
         </div>
         
         <!--  -->
@@ -54,9 +57,16 @@
         <div v-else-if="ex.type == 'MF'">
           <div v-if="ex.result" v-html="ex.result"></div>
         </div>
+        
+        <div style="margin-top: 20px;">
+          이 문제의 설명은 주저리주저리~ 입니다.
+          <a href="https://www.youtube.com" target="">영상설명 보기</a>
+        </div>
       </el-card>
 
       <br />
+      <el-button type="success" size="large" @click="goBack()">돌아가기</el-button>
+
     </div>
 
   </body>
