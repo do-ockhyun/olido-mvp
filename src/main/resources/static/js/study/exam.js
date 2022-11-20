@@ -32,13 +32,14 @@ const vm = new Vue({
       this.selected = null;
     },
     goHome() {
+      const data = this.exams.map(ex => ({
+        id: `${ex.id}`,
+        answer: `${ex.answer}`
+      }))
+      console.log('data', data)
+
       const ok = confirm("제출하시겠습니까?");
-      if (ok) {
-        const data = this.exams.map(ex => ({
-          id: `${ex.id}`,
-          answer: `${ex.answer}`
-        }))
-        console.log('data', data)
+      if (ok) {  
         axios.post(`/study/exam/${_id}?title=${_title}`, data )
         location.href = "/study";
       }

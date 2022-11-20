@@ -17,11 +17,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.misolab.olido.dto.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +40,8 @@ public class StudyController {
 
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     static class Exam {
         String id;
         String title;
@@ -47,12 +53,15 @@ public class StudyController {
 
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     static class Answer {
         String id;
         String answer;
     }
 
     @Data
+    @NoArgsConstructor
     static class Quiz {
         String id;
         String title;
@@ -192,8 +201,35 @@ public class StudyController {
 
 
     @GetMapping("/result/{id}")
-    public String result(@PathVariable String id, Model model) {
+    public String result(@PathVariable String id, Model model) throws JsonMappingException, JsonProcessingException {
+        User user = (User) httpSession.getAttribute("user");
+        if (user == null) {
+            throw new RuntimeException("session is null");
+        }
+
         model.addAttribute("id", id);
+
+        List<Result> resultList = userResult.get(user.getUserId());
+        if (resultList == null) {
+            return "study/result";
+        }
+
+        Result result = resultList.stream().filter(r -> r.getId().equals(id)).findFirst().get();
+        //  결과 번호를 가지고
+            //  quiz 를 찾고
+        Quiz quiz = quizList.stream().filter(q -> q.getId().equals(id)).findFirst().get();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Quiz newQquiz = objectMapper.readValue(objectMapper.writeValueAsString(quiz), Quiz.class);
+        List<Exam> _exam = newQquiz.getExam();
+        List<Answer> _answer = newQquiz.getAnswer();
+        List<Answer> _resultAnswer = result.getAnswer();
+        for (int i = 0; i < _resultAnswer.size(); i++) {
+            _exam.get(i).setResult(_resultAnswer.get(i).getAnswer());
+            _exam.get(i).setAnswer(_answer.get(i).getAnswer());
+        }
+        model.addAttribute("title", newQquiz.getTitle());
+        model.addAttribute("exams", newQquiz.getExam());
         return "study/result";
     }
 }

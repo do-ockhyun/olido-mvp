@@ -9,6 +9,9 @@ new Vue({
   methods: {
     goExam(id) {
       location.href = "/study/exam/" + id
+    },
+    goResult(id) {
+      location.href = "/study/result/" + id
     }
   },
 });

@@ -21,7 +21,7 @@
   
       <h2>시험 결과 목록</h2>
       <el-card v-for="r in results" shadow="always" :body-style="{ padding: '20px' }" :key="r.id">
-        <span>{{ r.title }}</span>
+        <span @click="goResult(r.id)">{{ r.title }}</span>
       </el-card>
     </div>
   </body>
