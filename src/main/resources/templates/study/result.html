@@ -1,15 +1,73 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.css" integrity="sha384-Juol1FqnotbkyZUT5Z7gUPjQ9gzlwCENvUZTpQBAPxtusdwFLRy382PSDx5UUJ4/" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.js" integrity="sha384-97gW6UIJxnlKemYavrqDHSX3SiygeOwIZhwyOKRfSaf0JWKRVj9hLASHgFTzT+0O" crossorigin="anonymous"></script> 
+
   </head>
 
   <body>
-    <h1>This is RESULT for <p th:text="${id}">id</p></h1>
+    <a href="javascript:window.history.back()">
+      <h1 th:text="${title}">title</h1>
+    </a>
+
+    <div id="app">
+      <!--  -->
+      <el-card class="box-card" v-for="ex in exams" :key="ex.id">
+        <div slot="header" class="clearfix">
+          <span>{{ ex.title }}</span>
+          <p v-if="ex.type!=='MF'" style="float: right; padding: 3px 0">정답은 {{ ex.answer }}</p>
+          <div v-else v-html="ex.answer" style="float: right; padding: 3px 0"></div>
+        </div>
+        
+        <!--  -->
+        <el-radio-group v-if="ex.type == 'MC'" :value="parseInt(ex.result)">
+          <el-radio v-for="co in ex.choice" :key="co" :label="co">{{ co }}</el-radio>
+        </el-radio-group>
+
+        <!--  -->
+        <div v-else-if="ex.type == 'SA'">
+          <el-input
+            placeholder="주관식"
+            size="normal"
+            clearable
+            :value="ex.result">
+          </el-input>
+        </div>
+
+        <!--  -->
+        <div v-else-if="ex.type == 'SC'">
+          <el-switch
+            :value="Boolean(ex.result)"
+            active-text="O"
+            inactive-text="X">
+          </el-switch>
+        </div>
+
+        <!--  -->
+        <div v-else-if="ex.type == 'MF'">
+          <div v-if="ex.result" v-html="ex.result"></div>
+        </div>
+      </el-card>
+
+      <br />
+    </div>
+
   </body>
+
+  <script th:inline="javascript">
+/*<![CDATA[*/
+    const _id = /*[[ ${id} ]]*/"";
+    const _title = /*[[ ${title} ]]*/"";
+    const _exams = /*[[ ${exams} ]]*/[];
+/*]]>*/
+  </script>
+    
+  <script src="/js/study/result.js"></script>    
 </html>

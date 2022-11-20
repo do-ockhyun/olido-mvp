@@ -1,39 +1,18 @@
 const vm = new Vue({
   el: "#app",
   mounted() {
+    this.exams = _exams.map((ex) => {
+      if (ex.choice) {
+        ex.choice = JSON.parse(ex.choice)
+      }
+      return ex;
+    })
   },
 
   data() {
     return {
       selected: null,
-      exams: [
-        {
-          id: 0,
-          title: "1번",
-          type: "MC", // multiple choice
-          choice: [1, 2, 3, 4, 5],
-          answer: null,
-        },
-        {
-          id: 1,
-          title: "2번",
-          type: "SC", //  single choice
-          answer: null,
-        },
-        {
-          id: 2,
-          title: "3번",
-          type: "SA", //  single answer
-          answer: null,
-        },
-        {
-          id: 3,
-          title: "4번",
-          type: "MF", //  math form
-          answer: null,
-          result: null,
-        },
-      ],
+      exams: null,
     };
   },
   methods: {
@@ -53,8 +32,15 @@ const vm = new Vue({
       this.selected = null;
     },
     goHome() {
+      const data = this.exams.map(ex => ({
+        id: `${ex.id}`,
+        answer: `${ex.answer}`
+      }))
+      console.log('data', data)
+
       const ok = confirm("제출하시겠습니까?");
-      if (ok) {
+      if (ok) {  
+        axios.post(`/study/exam/${_id}?title=${_title}`, data )
         location.href = "/study";
       }
     },
